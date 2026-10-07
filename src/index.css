@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* Paleta e fontes da marca, viram classes do Tailwind (bg-ink, text-blood, font-display...) */
+@theme {
+  --color-ink: #070707;
+  --color-coal: #111111;
+  --color-smoke: #1a1a1a;
+  --color-bone: #f5f5f2;
+  --color-ash: #9a9a9a;
+  --color-blood: #c91d26;
+  --color-blood-dark: #8f1219;
+  --color-steel: #1226da;
+
+  --font-display: "Anton", "Arial Narrow", Impact, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html { background: var(--color-ink); }
+  body {
+    @apply bg-ink text-bone font-sans antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--color-blood); color: white; }
+  :focus-visible { outline: 2px solid var(--color-blood); outline-offset: 3px; }
+}
+
+@layer components {
+  .container-ls { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
+
+  .eyebrow {
+    @apply flex items-center gap-3 text-[11px] font-semibold tracking-[0.2em] uppercase text-ash sm:text-xs sm:tracking-[0.3em];
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-10 bg-blood;
+  }
+
+  .titulo {
+    @apply font-display uppercase leading-[0.92] tracking-tight text-bone;
+    font-size: clamp(2.6rem, 7vw, 6rem);
+  }
+  .titulo em { @apply font-serif font-extrabold italic normal-case text-blood; letter-spacing: -0.02em; }
+
+  .btn-red { @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-xs font-bold tracking-[0.2em] uppercase transition duration-300 bg-blood text-white hover:bg-blood-dark hover:-translate-y-0.5 shadow-[0_10px_40px_-10px_rgba(201,29,38,.8)]; }
+  .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 text-xs font-bold tracking-[0.2em] uppercase transition duration-300 border border-white/20 text-bone hover:border-blood hover:text-white; }
+}
+
+/* Entrada no carregamento (topo da página) */
+@keyframes intro { from { opacity: 0; transform: translateY(30px); } }
+.intro { animation: intro 0.9s cubic-bezier(.2,.7,.2,1) both; animation-delay: var(--delay, 0ms); }
+
+/* Revelar ao rolar (usado pelo componente <Reveal>) */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(.2,.7,.2,1), transform 0.9s cubic-bezier(.2,.7,.2,1);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Poste de barbeiro em CSS (usado quando o aparelho não tem 3D) */
+@keyframes poste { to { background-position: 0 -113.137px; } }
+.poste-css {
+  width: 64px; height: 70%; max-height: 420px; border-radius: 999px;
+  background: repeating-linear-gradient(-45deg, #c91d26 0 22px, #f5f5f2 22px 40px, #1226da 40px 58px, #f5f5f2 58px 80px);
+  box-shadow: inset -14px 0 24px rgba(0,0,0,.45), inset 10px 0 18px rgba(255,255,255,.35), 0 0 0 6px #1a1a1a, 0 0 0 8px #555;
+  background-size: 113.137px 113.137px;
+  animation: poste 2.5s linear infinite;
+}
+
+/* Faixa de texto infinita */
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 28s linear infinite; }
+
+/* Granulado de filme por cima de tudo */
+.grain::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 60; opacity: .06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .intro { animation: none; }
+  .marquee-track { animation: none; }
+  .poste-css { animation: none; }
+}
